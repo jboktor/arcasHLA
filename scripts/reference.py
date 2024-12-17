@@ -85,7 +85,7 @@ def check_ref():
         build_fasta()
         
 def fetch_hla_dat():
-    '''Clones IMGTHLA github to database.'''
+    '''Clones IMGTHLA github to database and unzips hla.dat if needed.'''
     
     if isdir(IMGTHLA):
         run_command(['rm', '-rf', IMGTHLA])
@@ -94,6 +94,11 @@ def fetch_hla_dat():
     run_command(command,
                 '[reference] Cloning IMGT/HLA database:')
     
+    # Check if hla.dat is zipped and unzip it if needed
+    if isfile(hla_dat + '.zip'):
+        run_command(['unzip', '-o', hla_dat + '.zip', '-d', dirname(hla_dat)],
+                   '[reference] Unzipping hla.dat file:')
+        
 def checkout_version(commithash, verbose = True):
     '''Checks out a specific IMGTHLA github version given a commithash.'''
     
