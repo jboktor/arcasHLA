@@ -30,6 +30,7 @@ import json
 import argparse
 import logging as log
 import numpy as np
+import zipfile
 
 from argparse import RawTextHelpFormatter
 from os.path import isfile, isdir, dirname, realpath
@@ -96,8 +97,12 @@ def fetch_hla_dat():
     
     # Check if hla.dat is zipped and unzip it if needed
     if isfile(hla_dat + '.zip'):
-        run_command(['unzip', '-o', hla_dat + '.zip', '-d', dirname(hla_dat)],
-                   '[reference] Unzipping hla.dat file:')
+        log.info('[reference] Unzipping hla.dat file')
+        try:
+            with zipfile.ZipFile(hla_dat + '.zip', 'r') as zip_ref:
+                zip_ref.extractall(dirname(hla_dat))
+        except zipfile.BadZipFile:
+            sys.exit('[reference] Error: hla.dat.zip is corrupted')
         
 def checkout_version(commithash, verbose = True):
     '''Checks out a specific IMGTHLA github version given a commithash.'''
